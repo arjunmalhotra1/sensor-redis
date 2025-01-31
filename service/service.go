@@ -10,10 +10,10 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
-// type cache interface {
-// 	set(key string, value string) error
-// 	get(key string) (string, bool)
-// }
+type Cache interface {
+	Set(ctx context.Context, key string, value data.Message) error
+	Get(ctx context.Context, key string) ([]data.Message, error)
+}
 
 type RedisCache struct {
 	Client *redis.Client

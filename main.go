@@ -70,7 +70,7 @@ func getMessage(res http.ResponseWriter, req *http.Request) {
 
 }
 
-var cache service.RedisCache
+var cache service.Cache
 
 func main() {
 	redisClient := redis.NewClient(&redis.Options{Addr: "localhost:6379"})
