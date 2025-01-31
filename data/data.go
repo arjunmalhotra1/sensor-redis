@@ -20,3 +20,10 @@ func ValidateMessageBody(m Message) (bool, error) {
 	}
 	return true, nil
 }
+
+func ValidateDeviceId(devId string) (bool, error) {
+	if devId == "" {
+		return false, fmt.Errorf("invalid device id")
+	}
+	return true, nil
+}

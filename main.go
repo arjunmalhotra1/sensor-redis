@@ -61,7 +61,12 @@ func getMessage(res http.ResponseWriter, req *http.Request) {
 	fmt.Println("devId: ", devId)
 	key := fmt.Sprintf("sensor:%s", devId)
 
-	// TODO: Add data validations
+	ok, err := data.ValidateDeviceId(devId)
+	if !ok {
+		log.Println("error validating data: ", err)
+		http.Error(res, fmt.Sprintf("invalid data %v", err), http.StatusBadRequest)
+		return
+	}
 
 	ctx := context.Background()
 	data, err := cache.Get(ctx, key)
