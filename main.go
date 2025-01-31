@@ -46,7 +46,7 @@ func sendMessage(res http.ResponseWriter, req *http.Request) {
 	}
 
 	log.Println("message written: ", message)
-	render.JSON(res, req, message.DeviceId)
+	render.JSON(res, req, message)
 
 }
 
