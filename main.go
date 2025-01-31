@@ -34,13 +34,19 @@ func sendMessage(res http.ResponseWriter, req *http.Request) {
 		http.Error(res, "invalid data", http.StatusBadRequest)
 		return
 	}
-	// TODO: Add data validations
+	ok, err := data.ValidateMessageBody(message)
+	if !ok {
+		log.Println("error validating data: ", err)
+		http.Error(res, fmt.Sprintf("invalid data %v", err), http.StatusBadRequest)
+		return
+	}
+
 	message.Time = time.Now()
 	ctx := context.Background()
 	key := fmt.Sprintf("sensor:%s", message.DeviceId)
 	err = cache.Set(ctx, key, message)
 	if err != nil {
-		log.Println("Error storing data: ", err)
+		log.Println("error storing data: ", err)
 		http.Error(res, "failed to store the data in cache", http.StatusInternalServerError)
 		return
 	}
