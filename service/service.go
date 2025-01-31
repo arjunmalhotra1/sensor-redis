@@ -34,9 +34,6 @@ func (r RedisCache) Get(ctx context.Context, key string) ([]data.Message, error)
 	fmt.Println("key: ", key)
 	res, err := r.Client.LRange(ctx, key, 0, -1).Result()
 	if err != nil {
-		// if err == redis.Nil {
-		// 	return nil, fmt.Errorf("get key not found %s", key)
-		// }
 		log.Println("error getting the result", res)
 		return nil, fmt.Errorf("failed to get a value from redis %v", err)
 	} else if len(res) == 0 {
@@ -44,14 +41,6 @@ func (r RedisCache) Get(ctx context.Context, key string) ([]data.Message, error)
 	}
 
 	var messages []data.Message
-	// resBytes, err := json.Marshal(res)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to marshal the redis response into bytes %v", err)
-	// }
-	// err = json.Unmarshal(resBytes, &messages)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("failed to unmarshal the redis response %v", err)
-	// }
 	// Loop through each item in the Redis list
 	for _, item := range res {
 		var msg data.Message
