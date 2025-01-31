@@ -19,10 +19,12 @@ import (
 func sendMessage(res http.ResponseWriter, req *http.Request) {
 	if req.Method != "POST" {
 		http.Error(res, "Invalid request method", http.StatusMethodNotAllowed)
+		return
 	}
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
 		http.Error(res, "error reading the input", http.StatusInternalServerError)
+		return
 	}
 	defer req.Body.Close()
 
@@ -30,6 +32,7 @@ func sendMessage(res http.ResponseWriter, req *http.Request) {
 	err = json.Unmarshal(body, &message)
 	if err != nil {
 		http.Error(res, "invalid data", http.StatusBadRequest)
+		return
 	}
 	// TODO: Add data validations
 	message.Time = time.Now()
@@ -70,14 +73,11 @@ func getMessage(res http.ResponseWriter, req *http.Request) {
 var cache service.RedisCache
 
 func main() {
+	redisClient := redis.NewClient(&redis.Options{Addr: "localhost:6379"})
+	cache = service.RedisCache{Client: redisClient}
 	r := chi.NewMux()
 	r.Post("/message", sendMessage)
 	r.Get("/message/{device_id}", getMessage)
 	http.ListenAndServe(":8086", r)
-	redisClient := redis.NewClient(&redis.Options{Addr: "redis:6379"})
-	cache = service.RedisCache{Client: redisClient}
-}
-
-func init() {
 
 }
